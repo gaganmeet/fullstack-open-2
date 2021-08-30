@@ -19,7 +19,6 @@ const App = () => {
 
   function handleClick(e) {
     e.preventDefault();
-    console.log(persons);
     if (persons.find((p) => p.name === newName.name)) {
       alert(`${newName.name} is already in the list`);
     } else {
@@ -44,7 +43,6 @@ const App = () => {
   }
 
   function handleDelete(id) {
-    console.log(id);
     remove(id).then((response) => {
       setPersons(persons.filter((p) => p.id !== id));
     });
