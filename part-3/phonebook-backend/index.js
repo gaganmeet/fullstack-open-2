@@ -1,5 +1,8 @@
-const express = require("express")();
+const express = require("express");
+const app = express();
 const { nanoid } = require("nanoid");
+const morgan = require("morgan");
+const cors = require("cors");
 
 let persons = [
   {
@@ -23,38 +26,36 @@ let persons = [
     number: "39-23-6423122",
   },
 ];
-const port = 5000;
+const port = process.env.PORT || 5000;
 
-express.delete("/persons/:id", (req, res) => {
-  const id = req.params.id;
+app.use(morgan("tiny"));
+app.use(cors());
+app.use(express.json());
+
+// DELETE /persons/:id
+app.delete("/persons/:id", (request, response) => {
+  const id = request.params.id;
+  console.log(id);
   persons = persons.filter((person) => person.id !== id);
   response.status(204).end();
 });
 
-express.post("/persons", (req, res) => {
-  const idx = persons.findIndex((person) => person.name === req.query.name);
-  if (
-    idx !== -1 ||
-    req.query.name === undefined ||
-    req.query.number === undefined
-  ) {
+app.post("/persons", (req, res) => {
+  const person = req.body;
+  const idx = persons.findIndex((person) => person.name === person.name);
+  if (idx === -1 || person.name === undefined || person.number === undefined) {
     res.status(400).json({ error: "try different query" });
   } else {
-    const id = nanoid();
-    persons.push({
-      id,
-      name: req.query.name,
-      number: req.query.number,
-    });
-    res.send(`Created ${req.query.name}`);
+    persons.push(person);
   }
+  res.json(person);
 });
 
-express.get("/info", (req, res) => {
+app.get("/info", (req, res) => {
   res.send(`Phone book has record of ${persons.length} people`);
 });
 
-express.get("/persons/:id", (req, res) => {
+app.get("/persons/:id", (req, res) => {
   const id = req.params.id;
   const person = persons.find((p) => p.id === id);
   if (person) {
@@ -64,10 +65,10 @@ express.get("/persons/:id", (req, res) => {
   }
 });
 
-express.get("/persons", (req, res) => {
+app.get("/persons", (req, res) => {
   res.json(persons);
 });
 
-express.listen(port, () => {
+app.listen(port, () => {
   console.log(`listening to port ${port}`);
 });
