@@ -1,1 +1,7 @@
-POST http://localhost:5000/persons/?&number=1234
+POST http://localhost:5000/persons HTTP/1.1
+content-type: application/json
+
+{
+    "name": "John",
+    "number": 1234
+} 

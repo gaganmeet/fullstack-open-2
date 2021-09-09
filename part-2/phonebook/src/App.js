@@ -1,4 +1,3 @@
-import { nanoid } from "nanoid";
 import React, { useState, useEffect } from "react";
 import { getAll, remove, create } from "./axioscall";
 const App = () => {
@@ -25,7 +24,6 @@ const App = () => {
       const newData = {
         name: newName.name,
         number: newName.number,
-        id: nanoid(),
       };
       create(newData).then((response) => {
         setPersons(persons.concat(response));
